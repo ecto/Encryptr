@@ -66,7 +66,7 @@
         error: function(model, resp, options) {
           $(".blocker").hide();
           if (resp === "Container has not changed") {
-            // We don't yet have toasts, just ignore it.
+            window.app.toastView.show("Unchanged.");
           }
           else {
             navigator.notification.alert(
