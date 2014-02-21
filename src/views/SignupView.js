@@ -64,6 +64,8 @@
             $(".blocker").hide();
             return;
           }
+          window.app.settings = _.extend(window.app.settings, {username: username});
+          window.localStorage.setItem("settings", JSON.stringify(window.app.settings));
           window.app.session = session;
           var counterEstablished = $.Deferred();
           window.app.establishCounter(counterEstablished);
