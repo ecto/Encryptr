@@ -22,6 +22,7 @@ a {
 }
 h1 {
   padding: 0;
+  font-family: "Jura Light", sans-serif;
 }
 .app {
   background-color: #ffffff;
@@ -58,7 +59,8 @@ h1 {
   color: #ffffff;
   text-align: center;
   line-height: 44px;
-  font-size: 110%;
+  font-family: "Jura Light", sans-serif;
+  font-size: 140%;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -176,6 +178,10 @@ a.btn {
 .middle {
   text-align: center;
 }
+.login-form {
+  max-width: 320px;
+  margin: 0 auto;
+}
 input[type="text"],
 input[type="password"],
 input[type="tel"],
@@ -192,7 +198,7 @@ select {
   margin: 0;
   display: block;
   width: 100%;
-  font: normal 100% "Source Sans Pro";
+  font: normal 100% "Source Sans Pro", sans-serif;
   outline: 0 none;
 }
 input[type="text"],
@@ -278,8 +284,8 @@ button {
   display: none;
   position: relative;
   top: 100px;
-  width: 200px;
-  font-size: 180%;
+  width: 300px;
+  font-size: 230%;
   font-weight: bold;
   margin: 0 auto;
   color: #ccc;
@@ -456,8 +462,8 @@ ul .spinner > div.sep {
   bottom: 0;
   padding: 5px ;
 }
-.offline-ui-retry {
-  line-height: 30px ;
+.offline-ui .offline-ui-retry {
+  line-height: 2em;
 }
 .spinner {
   width: 100px;
