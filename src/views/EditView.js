@@ -72,16 +72,16 @@
           window.app.navigator.popView(window.app.defaultPopEffect);
           $(".blocker").hide();
         },
-        error: function(model, resp, options) {
+        error: function(err) {
           $(".blocker").hide();
-          if (resp === "Container has not changed") {
+          if (err === "Container has not changed") {
             window.app.toastView.show("Unchanged.");
           }
           else {
-            navigator.notification.alert(
-              resp,
-              function() {},
-              "Error");
+            window.app.dialogAlertView.show({
+              title: "Error",
+              subtitle: err
+            }, function() {});
           }
         }
       });

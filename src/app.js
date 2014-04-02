@@ -24,35 +24,37 @@ var Encryptr = (function (window, console, undefined) {
     // window.crypton.host = "192.168.1.12";
     window.crypton.host = "localhost";
 
-    window.Offline.options =
-      {
-        // Should we check the connection status immediatly on page load.
-        checkOnLoad: false,
+    window.Offline.options = {
+      // Should we check the connection status immediatly on page load.
+      checkOnLoad: false,
 
-        // Should we monitor AJAX requests to help decide if we have a connection.
-        interceptRequests: true,
+      // Should we monitor AJAX requests to help decide if we have a connection.
+      interceptRequests: true,
 
-        // Should we automatically retest periodically when the connection is down (set to false to disable).
-        reconnect: {
-          // How many seconds should we wait before rechecking.
-          initialDelay: 3
-        },
+      // Should we automatically retest periodically when the connection is
+      // down (set to false to disable).
+      reconnect: {
+        // How many seconds should we wait before rechecking.
+        initialDelay: 3
+      },
 
-        // Should we store and attempt to remake requests which fail while the connection is down.
-        requests: true,
+      // Should we store and attempt to remake requests which fail while the
+      // connection is down.
+      requests: true,
 
-        // Should we show a snake game while the connection is down to keep the user entertained?
-        // It's not included in the normal build, you should bring in js/snake.js in addition to
-        // offline.min.js.
-        game: false,
+      // Should we show a snake game while the connection is down to keep
+      // the user entertained?
+      // It's not included in the normal build, you should bring in
+      // js/snake.js in addition to offline.min.js.
+      game: false,
 
-        // What the xhr checks
-        checks: {
-          xhr: {
-            url: "https://" + window.crypton.host + "/"
-          }
+      // What the xhr checks
+      checks: {
+        xhr: {
+          url: "https://" + window.crypton.host + "/"
         }
-      };
+      }
+    };
 
     var isNodeWebkit = (typeof process == "object");
     if (isNodeWebkit) $.os.nodeWebkit = true;
@@ -72,12 +74,21 @@ var Encryptr = (function (window, console, undefined) {
       $this.removeClass("active");
     });
 
+    this.dialogConfirmView = new Encryptr.prototype.DialogConfirmView().render();
+    this.dialogConfirmView.dismiss();
+    $("#main").append(this.dialogConfirmView.el);
+    this.dialogAlertView = new Encryptr.prototype.DialogAlertView().render();
+    this.dialogAlertView.dismiss();
+    $("#main").append(this.dialogAlertView.el);
+
     window.FastClick.attach(document.body);
   };
 
   Encryptr.prototype.onDeviceReady = function(event) {
-    if (window.device && window.device.platform === "iOS" && parseFloat(window.device.version) >= 7.0) {
-      window.document.querySelectorAll(".app")[0].style.top = "20px"; // status bar hax
+    if (window.device && window.device.platform === "iOS" &&
+        parseFloat(window.device.version) >= 7.0) {
+      // status bar hax
+      window.document.querySelectorAll(".app")[0].style.top = "20px";
     }
     if (window.StatusBar && $.os.ios) {
       window.StatusBar.styleLightContent();
@@ -85,23 +96,22 @@ var Encryptr = (function (window, console, undefined) {
     // Backstack effects
     Encryptr.prototype.noEffect = new window.BackStack.NoEffect();
     Encryptr.prototype.fadeEffect = new window.BackStack.FadeEffect();
-    Encryptr.prototype.defaultEffect = new window.BackStack.NoEffect();
-    Encryptr.prototype.defaultPopEffect = new window.BackStack.NoEffect();
-    if (window.device && window.device.platform === "iOS") {
-      Encryptr.prototype.defaultEffect = new Encryptr.prototype.FastSlideEffect();
-      Encryptr.prototype.defaultPopEffect = new Encryptr.prototype.FastSlideEffect({
-        direction: "right"
-      });
-    }
-    window.document.addEventListener("backbutton", Encryptr.prototype.onBackButton, false);
-    window.document.addEventListener("menubutton", Encryptr.prototype.onMenuButton, false);
+    Encryptr.prototype.defaultEffect = new Encryptr.prototype.FastSlideEffect();
+    Encryptr.prototype.defaultPopEffect = new Encryptr.prototype.FastSlideEffect({
+      direction: "right"
+    });
+    window.document.addEventListener("backbutton",
+                                     Encryptr.prototype.onBackButton, false);
+    window.document.addEventListener("menubutton",
+                                     Encryptr.prototype.onMenuButton, false);
 
     // Platform specific clipboard plugin / code
     if ($.os.ios || $.os.android) {
       Encryptr.prototype.copyToClipboard = window.cordova.plugins.clipboard.copy;
     } else if ($.os.bb10) {
       Encryptr.prototype.copyToClipboard = window.community.clipboard.setText;
-    } else if ($.os.nodeWebkit && window.require ) { // How to *actually* detect node-webkit ?
+    // How to *actually* detect node-webkit ?
+    } else if ($.os.nodeWebkit && window.require ) {
       var gui = window.require('nw.gui');
       window.clipboard = gui.Clipboard.get();
       Encryptr.prototype.copyToClipboard = function(text) {
@@ -136,6 +146,14 @@ var Encryptr = (function (window, console, undefined) {
   };
 
   Encryptr.prototype.onBackButton = function(event) {
+    if ($(".dialogAlert").is(":visible")) {
+      window.app.dialogAlertView.dismiss();
+      return;
+    }
+    if ($(".dialogConfirm").is(":visible")) {
+      window.app.dialogConfirmView.dismiss();
+      return;
+    }
     if ($(".menu").is(":visible")) {
       window.app.mainView.menuView.dismiss();
       return;
@@ -203,7 +221,8 @@ var Encryptr = (function (window, console, undefined) {
   };
 
   Encryptr.prototype.randomString = function(length) {
-    var charset = "!@#$%^*()_+{}:?|,[];./~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var charset = "!@#$%^*()_+{}:?|,[];./~ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+      "abcdefghijklmnopqrstuvwxyz0123456789";
     var i;
     var result = "";
     if(window.crypto && window.crypto.getRandomValues) {

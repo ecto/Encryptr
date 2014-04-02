@@ -47,20 +47,20 @@
 
       window.crypton.generateAccount(username, passphrase, function(err, account) {
         if (err) {
-          navigator.notification.alert(
-            err,
-            function() {},
-            "Signup error");
+          window.app.dialogAlertView.show({
+            title: "Signup error",
+            subtitle: err
+          }, function(){});
           $(".blocker").hide();
           return;
         }
         // Now log in...
         window.crypton.authorize(username, passphrase, function(err, session) {
           if (err) {
-            navigator.notification.alert(
-              err,
-              function() {},
-              "Authentication error");
+            window.app.dialogAlertView.show({
+              title: "Authentication error",
+              subtitle: err
+            }, function() {});
             $(".blocker").hide();
             return;
           }
@@ -78,7 +78,10 @@
           counterEstablished.done(function () {
             window.app.session.create(rcID, function(err, entries){
               if (err) {
-                navigator.notification.alert(err);
+                window.app.dialogAlertView.show({
+                  title: "Error",
+                  subtitle: err
+                }, function() {});
                 $(".blocker").hide();
                 return;
               }
@@ -90,9 +93,6 @@
                 { collection: new window.app.EntriesCollection() },
                 window.app.noEffect
               );
-              $(".blocker").hide();
-              window.app.loginView.dismiss();
-              _this.dismiss();
             });
           });
         });
