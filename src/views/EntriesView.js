@@ -64,9 +64,7 @@
       window.app.currentEntriesCollection = _this.collection;
       _this.collection.fetch({
         success: function(entries) {
-          if (entries.length === 0) {
-            _this.addAll();
-          }
+          _this.addAll();
         }, error: function(err) {
           console.log(err); // @TODO: Handle this error
         }
