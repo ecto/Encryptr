@@ -65,22 +65,24 @@
         window.app.settings = _.extend(window.app.settings, {username: username});
         window.localStorage.setItem("settings", JSON.stringify(window.app.settings));
         window.app.session = session;
-        var counterEstablished = $.Deferred();
+        function whenSessionIsReady() {
+          window.app.accountModel = new window.app.AccountModel({
+            username: username,
+            passphrase: passphrase,
+            session: session
+          });
+          window.app.mainView = new window.app.MainView().render();
+          var entriesCollection = new window.app.EntriesCollection();
+          window.app.navigator.pushView(
+            window.app.EntriesView,
+            { collection: entriesCollection },
+            window.app.noEffect
+          );
+          _this.dismiss();
+          $(".blocker").hide();
+        }
+        var counterEstablished = $.Deferred().done(whenSessionIsReady);
         window.app.establishCounter(counterEstablished);
-        window.app.accountModel = new window.app.AccountModel({
-          username: username,
-          passphrase: passphrase,
-          session: session
-        });
-        window.app.mainView = new window.app.MainView().render();
-        var entriesCollection = new window.app.EntriesCollection();
-        window.app.navigator.pushView(
-          window.app.EntriesView,
-          { collection: entriesCollection },
-          window.app.noEffect
-        );
-        _this.dismiss();
-        $(".blocker").hide();
       });
     },
     loginButton_clickHandler: function(event) {
