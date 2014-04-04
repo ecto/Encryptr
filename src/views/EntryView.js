@@ -64,13 +64,16 @@
     },
     deleteButton_clickHandler: function(event) {
       var _this = this;
-      var message = ("Delete this entry?");
-      navigator.notification.confirm(message, function(button) {
-        if (button === 1) {
+      window.app.dialogConfirmView.show({
+        title: "Confirm delete",
+        subtitle: "Delete this entry?"
+      }, function(event) {
+        console.log(event);
+        if (event.type === "dialogAccept") {
           _this.model.destroy();
           window.app.navigator.popView(window.app.defaultPopEffect);
         }
-      }, "Confirm delete");
+      });
     },
     viewActivate: function(event) {
       var _this = this,

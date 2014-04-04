@@ -55,10 +55,10 @@
 
       window.crypton.authorize(username, passphrase, function(err, session) {
         if (err) {
-          navigator.notification.alert(
-            "Username or Passphrase is incorrect",
-            function() {},
-            "Authentication error");
+          window.app.dialogAlertView.show({
+            title: "Authentication error",
+            subtitle: "Username or Passphrase is incorrect"
+          }, function(){});
           $(".blocker").hide();
           return;
         }
@@ -112,7 +112,10 @@
           complete: function() {
             if (window.app.settings && window.app.settings.username) {
               $("#username").val(window.app.settings.username);
-              $("#passphrase").focus();
+              // $("#passphrase").focus();
+              var el = $("#passphrase").get(0);
+              el.focus();
+              if (el.setSelectionRange) el.setSelectionRange(0, 0);
             }
           }
         });

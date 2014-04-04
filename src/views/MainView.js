@@ -25,7 +25,8 @@
           "addButton_clickHandler",
           "saveButton_clickHandler",
           "editButton_clickHandler",
-          "deleteButton_clickHandler");
+          "deleteButton_clickHandler"
+      );
       this.menuView = new Encryptr.prototype.MenuView().render();
       this.menuView.dismiss();
       this.addMenuView = new Encryptr.prototype.AddMenuView().render();
@@ -55,9 +56,6 @@
       }
     },
     addButton_clickHandler: function(event) {
-      if (!this.menuView.$el.hasClass("dismissed")) {
-        return;
-      }
       event.preventDefault();
       this.addMenuView.toggle();
     },
@@ -72,6 +70,12 @@
     },
     setTitle: function(title) {
       this.$(".nav .title").html(title);
+    },
+    cancelDialogButton_clickHandler: function(event) {
+      // ...
+    },
+    acceptDialogButton_clickHandler: function(event) {
+      // ...
     },
     menuClose_clickHandler: function(event) {
       if (!this.menuView.$el.hasClass("dismissed") &&
