@@ -45,7 +45,8 @@
 
       $("input").blur();
 
-      window.crypton.generateAccount(username, passphrase, function(err, account) {
+      window.crypton.generateAccount(username, passphrase, function(err,
+                                                                    account) {
         if (err) {
           window.app.dialogAlertView.show({
             title: "Signup error",
@@ -64,19 +65,18 @@
             $(".blocker").hide();
             return;
           }
-          window.app.settings = _.extend(window.app.settings, {username: username});
-          window.localStorage.setItem("settings", JSON.stringify(window.app.settings));
+          window.app.settings = _.extend(window.app.settings,
+                                         {username: username});
+          window.localStorage.setItem("settings",
+                                      JSON.stringify(window.app.settings));
           window.app.session = session;
-          var counterEstablished = $.Deferred();
-          window.app.establishCounter(counterEstablished);
-          window.app.accountModel = new window.app.AccountModel({
-            username: username,
-            passphrase: passphrase,
-            session: session
-          });
-          var rcID = window.app.EntriesCollection.prototype.rootContainerID;
-          counterEstablished.done(function () {
-            window.app.session.create(rcID, function(err, entries){
+          var whenSessionIsReady = function () {
+            window.app.accountModel = new window.app.AccountModel({
+              username: username,
+              passphrase: passphrase,
+              session: session
+            });
+            window.app.session.create("entries", function(err, entries){
               if (err) {
                 window.app.dialogAlertView.show({
                   title: "Error",
@@ -87,14 +87,19 @@
               }
               // Set up MainView
               window.app.mainView = new window.app.MainView().render();
-              // Push an EntriesView
+              // Push a ListView 
               window.app.navigator.pushView(
                 window.app.EntriesView,
                 { collection: new window.app.EntriesCollection() },
                 window.app.noEffect
               );
+              $(".blocker").hide();
+              window.app.loginView.dismiss();
+              _this.dismiss();
             });
-          });
+          };
+          var counterEstablished = $.Deferred().done(whenSessionIsReady);
+          window.app.establishCounter(counterEstablished);
         });
       });
     },

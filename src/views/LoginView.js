@@ -62,8 +62,10 @@
           $(".blocker").hide();
           return;
         }
-        window.app.settings = _.extend(window.app.settings, {username: username});
-        window.localStorage.setItem("settings", JSON.stringify(window.app.settings));
+        window.app.settings = _.extend(window.app.settings,
+                                       {username: username});
+        window.localStorage.setItem("settings",
+                                    JSON.stringify(window.app.settings));
         window.app.session = session;
         function whenSessionIsReady() {
           window.app.accountModel = new window.app.AccountModel({
