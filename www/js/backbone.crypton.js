@@ -36,8 +36,8 @@
       debug("ERROR: No available session");
       return options.error && options.error("No available session");
     }
-    var containerName = model.container || options.container;
-    if (!containerName) {
+    var containerId = model.container || options.container;
+    if (!containerId) {
       debug("ERROR: No container specified");
       return options.error && options.error("No container specified");
     }
@@ -53,7 +53,7 @@
           // Should we be calling model.collection.sync?
           return;
         }
-        session.load(containerName, function(err, entries) {
+        session.load(containerId, function(err, entries) {
           if (err) {
             return errorHandler(err, options);
           }
@@ -63,7 +63,7 @@
         });
         break;
       case "create":
-        session.load(containerName, function(err, entries) {
+        session.load(containerId, function(err, entries) {
           if (err) return errorHandler(err, options);
           var modelId = model.modelId || guid();
           entries.add(modelId, function(err) {
@@ -89,7 +89,7 @@
         });
         break;
       case "update":
-        session.load(containerName, function(err, entries) {
+        session.load(containerId, function(err, entries) {
           if (err) return errorHandler(err, options);
           entries.get(model[model.idAttribute], function(err, entry) {
             if (err) {
@@ -114,7 +114,7 @@
         });
         break;
       case "delete":
-        session.load(containerName, function(err, entries) {
+        session.load(containerId, function(err, entries) {
           if (err) return errorHandler(err, options);
           delete entries.keys[model[model.idAttribute]];
           if (model.isNew()) {
