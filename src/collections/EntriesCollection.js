@@ -40,7 +40,7 @@
       this.fetch();
       // Iterate over the contents, to dispatch on any contained folders:
       this.forEach(function (entry) {
-        if (entry.get("contentsId")) {
+        if (entry.get("folderId")) {
           entry.destroy(options);
         }
       });

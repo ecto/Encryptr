@@ -10,7 +10,7 @@
   /** FolderModel has features of an entry type, but is a real model. */
   var FolderModel = Backbone.Model.extend({
     defaults: {
-      contentsId: null,
+      folderId: null,
       type: "Folder"
     },
     displayName: "Folder",
@@ -18,21 +18,20 @@
     contents: null,
     initialize: function () {
       // XXX Probably should remove "folder:", to reduce server-exposed info.
-      this.modelId = "folder:" + window.app.getNewUnique();
       this.contents = null;
     },
     /** Intervene in save to create our contents container, if we lack it. */
     save: function (attrs, options) {
       var thisFolder = this;
       if (! thisFolder.contents) {
-        var collection = new Encryptr.prototype.EntriesCollection();
+        var collection = new Encryptr.prototype.EntriesCollection(),
+            folderId = "folderCollection:" + window.app.getNewUnique();
         collection.model = FolderModel;
-        collection.modelId = "folderCollection:" + window.app.getNewUnique();
-        collection.container = collection.modelId;
+        collection.container = folderId;
         thisFolder.contents = collection;
-        thisFolder.set("contentsId", collection.container);
+        thisFolder.set("folderId", folderId);
         var got = window.app.session.create(
-          collection.container,
+          folderId,
           function (err, container) {
             Backbone.Model.prototype.save.call(thisFolder, attrs, options);
           });
@@ -44,9 +43,9 @@
     fetch: function (options) {
       /* Reconstitute our entry collection if what we have is just the ID. */
       if (! this.contents) {
-        var contentsId = this.get("contentsId");
-        var collection = new Encryptr.prototype.EntriesCollection();
-        collection.container = contentsId;
+        var folderId = this.get("folderId"),
+            collection = new Encryptr.prototype.EntriesCollection();
+        collection.container = folderId;
         collection.theFolder = this;
         this.contents = collection;
         collection.fetch({

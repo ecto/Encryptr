@@ -150,12 +150,12 @@
     a_clickHandler: function(event) {
       var _this = this,
           model = this.model,
-          contentsId = model.get("contentsId");
+          folderId = model.get("folderId");
       if (!$(".menu").hasClass("dismissed") ||
           !$(".addMenu").hasClass("dismissed")) {
         return;
       }
-      if (contentsId) {
+      if (folderId) {
         model.fetch();
         window.app.navigator.pushView(
           window.app.EntriesView,
