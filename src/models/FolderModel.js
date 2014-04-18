@@ -24,11 +24,8 @@
     save: function (attrs, options) {
       var thisFolder = this;
       if (! thisFolder.contents) {
-        var collection = new Encryptr.prototype.EntriesCollection(),
-            folderId = "folderCollection:" + window.app.getNewUnique();
-        collection.model = FolderModel;
-        collection.container = folderId;
-        thisFolder.contents = collection;
+        var folderId = "folderCollection:" + window.app.getNewUnique(),
+            collection = this.hookupCollection(folderId);
         thisFolder.set("folderId", folderId);
         var got = window.app.session.create(
           folderId,
@@ -43,11 +40,7 @@
     fetch: function (options) {
       /* Reconstitute our entry collection if what we have is just the ID. */
       if (! this.contents) {
-        var folderId = this.get("folderId"),
-            collection = new Encryptr.prototype.EntriesCollection();
-        collection.container = folderId;
-        collection.theFolder = this;
-        this.contents = collection;
+        var collection = this.hookupCollection(this.get("folderId"));
         collection.fetch({
           error: function(errmsg) {
             navigator.notification.alert(
@@ -57,6 +50,14 @@
           }
         });
       }
+    },
+    hookupCollection: function(folderId) {
+      var collection = new Encryptr.prototype.EntriesCollection();
+      collection.model = FolderModel;
+      collection.theFolder = this;
+      collection.container = folderId;
+      this.contents = collection;
+      return collection;
     },
     destroy: function (options) {
       // TODO: TEST THIS!  RECURSIVE: ensure crypton containers are deleted!!
