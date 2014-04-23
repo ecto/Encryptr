@@ -93,10 +93,9 @@ var Encryptr = (function (window, console, undefined) {
   };
 
   Encryptr.prototype.onDeviceReady = function(event) {
-    if (window.device && window.device.platform === "iOS" &&
-        parseFloat(window.device.version) >= 7.0) {
-      // status bar hax
-      window.document.querySelectorAll(".app")[0].style.top = "20px";
+    // Useragent sniffin. Ew.
+    if (navigator.userAgent.match(/(iPad|iPhone);.*CPU.*OS 7_\d/i)) {
+      $(".app").css({"top":"20px"});
     }
     if (window.StatusBar && $.os.ios) {
       window.StatusBar.styleLightContent();
@@ -104,8 +103,8 @@ var Encryptr = (function (window, console, undefined) {
     // Backstack effects
     Encryptr.prototype.noEffect = new window.BackStack.NoEffect();
     Encryptr.prototype.fadeEffect = new window.BackStack.FadeEffect();
-    Encryptr.prototype.defaultEffect = new Encryptr.prototype.FastSlideEffect();
-    Encryptr.prototype.defaultPopEffect = new Encryptr.prototype.FastSlideEffect({
+    Encryptr.prototype.defaultEffect = new Encryptr.prototype.PopFadeEffect();
+    Encryptr.prototype.defaultPopEffect = new Encryptr.prototype.PopFadeEffect({
       direction: "right"
     });
     window.document.addEventListener("backbutton",
@@ -140,17 +139,24 @@ var Encryptr = (function (window, console, undefined) {
   };
 
   Encryptr.prototype.onResume = function(event) {
-    // Throw up the login screen
-    window.app.loginView.show();
-    window.setTimeout(function() {
-      window.app.session = undefined;
-      window.app.navigator.popAll(window.app.noEffect);
-      window.app.mainView.menuView.close();
-    },100);
+    // @TODO - this should probably just hide everything unless a set number 
+    //    of minutes have elapsed
+    // Logging out seems a bit overkill
+    // For now, put a 1 minute timeout on it...
+    var timeoutInMinutes =
+      Math.floor(((Date.now() - window.app.lastPaused) / 1000) / 60);
+    if (timeoutInMinutes >= 1) {
+      window.app.loginView.show();
+      window.setTimeout(function() {
+        window.app.session = undefined;
+        window.app.navigator.popAll(window.app.noEffect);
+        window.app.mainView.menuView.close();
+      },100);
+    }
   };
 
   Encryptr.prototype.onPause = function(event) {
-    // ...
+    window.app.lastPaused = Date.now();
   };
 
   Encryptr.prototype.onBackButton = function(event) {
@@ -193,7 +199,7 @@ var Encryptr = (function (window, console, undefined) {
           result += charset[values[i] % charset.length];
       }
     }
-    return result; // If you can't say something nice, don's say anything at all
+    return result; // If you can't say something nice, don't say anything at all
   };
 
   return Encryptr;
