@@ -21,8 +21,11 @@ var Encryptr = (function (window, console, undefined) {
     window.app.settings = JSON.parse(settings);
 
     // Set the hostname for the Crypton server
-    // window.crypton.host = "192.168.1.12";
-    window.crypton.host = "localhost";
+    // XXX ecto: temporarily pointing to a single server
+    // because the load balancer isn't playing nicely with
+    // either cookies or web sockets. this works for now
+    window.crypton.host = "54.85.102.109";
+    window.crypton.port = 1025;
 
     window.Offline.options = {
       // Should we check the connection status immediatly on page load.
@@ -49,9 +52,14 @@ var Encryptr = (function (window, console, undefined) {
       game: false,
 
       // What the xhr checks
+      // XXX ecto: this route should always return 200
+      // right now (it really shouldn't if foo doesn't exist)
+      // [https://github.com/SpiderOak/crypton/issues/72]
+      // whereas / currently always returns a 404 without
+      // appPath set in the crypton config (which it isn't in prod)
       checks: {
         xhr: {
-          url: "https://" + window.crypton.host + "/"
+          url: "https://" + window.crypton.host + "/peer/foo"
         }
       }
     };
