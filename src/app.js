@@ -21,8 +21,7 @@ var Encryptr = (function (window, console, undefined) {
     window.app.settings = JSON.parse(settings);
 
     // Set the hostname for the Crypton server
-    // window.crypton.host = "192.168.1.12";
-    window.crypton.host = "localhost";
+    window.crypton.host = "encryptrservice.crypton.io";
 
     window.Offline.options = {
       // Should we check the connection status immediatly on page load.
@@ -51,7 +50,7 @@ var Encryptr = (function (window, console, undefined) {
       // What the xhr checks
       checks: {
         xhr: {
-          url: "https://" + window.crypton.host + "/peer/foo"
+          url: "https://" + window.crypton.host + "/"
         }
       }
     };
